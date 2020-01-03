@@ -1,0 +1,581 @@
+{template '_header'}
+<link href="../addons/ewei_shopv2/plugin/diypage/static/template/search/style_search.css" rel="stylesheet" type="text/css"/>
+<link href="../addons/ewei_shopv2/plugin/diypage/static/template/search/style.css" rel="stylesheet" type="text/css"/>
+<div class='fui-page  fui-page-current page-goods-list'>
+    <div class="fui-header">
+		<div class="fui-header-left">
+			<a class="back"></a>
+		</div>
+		<div class="title">
+			<form method="post" action="">
+				<div class="searchbar">
+					<div  class="search-input">
+						<i class="icon icon-search"></i>
+						<!--输入关键字...-->
+						<input type="search" id="search" placeholder="一元买奶粉" value="{$_GPC['keywords']}">
+					</div>
+					<!--<div id="test2"  class="search-input">-->
+						<!--<input id="btnsearch" type="button" value="搜索">-->
+					<!--</div>-->
+				</div>
+			</form>
+		</div>
+		<!--搜索联动-->
+		<div  class="search-select">
+			<ul id="list" mode="out-in">
+
+			</ul>
+		</div>
+		<div class="fui-header-right" data-nomenu="true">
+
+			<a href="javascript:;"><i class="icon icon-sort" id="listblock" data-state="list"></i></a>
+
+		</div>
+    </div>
+
+	<!--最近搜索关键词-->
+	<section style="display: none" class="aui-scrollView">
+		<div class="aui-tab" data-ydui-tab>
+			<div class="tab-panel">
+				<div class="tab-panel-item tab-active">
+					<div class="aui-flex">
+						<div class="aui-flex-box">
+							<h2 class="b-line">最近搜索</h2>
+							<a href="javascript:location.reload();">返回商品列表</a>
+							<div class="delete history"></div>
+							<div class="history" id="his-dele">清除记录</div>
+						</div>
+					</div>
+					<div class="aui-word-key"></div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+    <div class="sort">
+
+	<div class="item on"><span class='text'>综合</span></div>
+
+	<div class="item" data-order="sales"><span class='text'>销量</span></div>
+
+	<div class="item item-price"  data-order="minprice"><span class='text'>价格</span>
+
+	    <span class="sorting">
+
+		<i class="icon icon-sanjiao2"></i>
+
+		<i class="icon icon-sanjiao1"></i>
+
+
+
+	    </span>
+
+	</div>
+
+	<div class="item"  data-order="filter"><span class='text'>筛选 <i class="icon icon-filter "></i></span> </div>
+
+    </div>
+
+
+    <div class="fui-content navbar">
+
+	<div class='fui-content-inner'>
+
+	    <div class='content-empty' style='display:none;'>
+
+		<i class='icon icon-searchlist'></i><br/>暂时没有任何商品
+
+	    </div>
+
+	    <div class="fui-goods-group container block" id="goods-list-container"></div>
+
+	    <div class='infinite-loading'><span class='fui-preloader'></span><span class='text'> 正在加载...</span></div>
+
+	</div>
+
+		{template '_copyright'}
+
+    </div>
+
+
+
+     <div class='fui-mask-m'></div>
+
+     <div class="screen">
+
+	<div class="attribute">
+
+	    <div class="item">
+
+		<div class="btn btn-default-o block" data-type="isrecommand"><i class="icon icon-check"></i> 推荐商品</div>
+
+	    </div>
+
+	    <div class="item">
+
+		<div class="btn btn-default-o block" data-type="isnew"><i class="icon icon-check"></i> 新品上市</div>
+
+	    </div>
+
+	    <div class="item">
+
+		<div class="btn btn-default-o block" data-type="ishot"><i class="icon icon-check"></i> 热卖商品</div>
+
+	    </div>
+
+	    <div class="item">
+
+		<div class="btn btn-default-o block" data-type="isdiscount"><i class="icon icon-check"></i> 促销商品</div>
+
+	    </div>
+
+	    <div class="item">
+
+		<div class="btn btn-default-o block" data-type="issendfree"><i class="icon icon-check"></i> 卖家包邮</div>
+
+	    </div>
+
+	    <div class="item">
+
+		<div class="btn btn-default-o block" data-type="istime"><i class="icon icon-check"></i> 限时抢购</div>
+
+	    </div>
+
+	</div>
+
+	{if $catlevel!=-1 && $opencategory}
+
+	<div class="title">选择分类</div>
+
+	<div class="cate" data-catlevel="{$catlevel}">
+
+		<div class="item"  data-level="1">
+
+		   {loop $allcategory['parent'] $c}
+
+		   <nav data-id="{$c['id']}">{$c['name']}</nav>
+
+		   {/loop}
+
+   	         </div>
+
+		{if $catlevel>=2}
+
+		<div class="item" data-level="2"></div>
+
+		{/if}
+
+		{if $catlevel>=3}
+
+		<div class="item" data-level="3"></div>
+
+		{/if}
+
+	</div>
+
+	{/if}
+
+	<div class="btns">
+
+	    <div class="cancel">取消筛选</div>
+
+	    <div class="confirm">确认</div>
+
+	</div>
+
+    </div>
+
+
+
+<script type='text/html' id='tpl_goods_list'>
+
+    <%each list as g%>
+
+	<div class="fui-goods-item" data-goodsid="<%g.id%>" data-type="<%g.type%>">
+
+		<a <%if g.bargain>0%>href="{php echo mobileUrl('bargain/detail')}&id=<%g.bargain%>"<%/if%><%if g.bargain<=0 && g.type!=9%>href="{php echo mobileUrl('goods/detail')}&id=<%g.id%>"<%else%>href="{php echo mobileUrl('cycelbuy/goods/detail')}&id=<%g.id%>" <%/if%>>
+
+		    <div class="image" data-lazy-background="<%g.thumb%>">
+
+				<%if g.cansee<=0 && g.seecommission<=0%>
+
+				{if !empty($_W['shopset']['shop']['saleout'])}
+
+				<%if g.total<=0%><div class="salez" style="background-image: url('{php echo tomedia($_W['shopset']['shop']['saleout'])}'); "></div><%/if%>
+
+				{else}
+
+				<%if g.total<=0%><div class="salez" style="background-image: url('{php echo '../addons/ewei_shopv2/static/images/shouqin.png'}'); "></div><%/if%>
+
+				{/if}
+
+				<%/if%>
+
+				<!--分销佣金-->
+
+				<%if g.cansee>0 && g.seecommission>0%>
+
+				<div class="goods-Commission"><%g.seetitle || "预计最高佣金"%>￥<%g.seecommission%> </div>
+
+				<%/if%>
+
+			</div>
+
+        </a>
+
+
+
+		<div class="detail">
+
+			<a <%if g.bargain>0%>href="{php echo mobileUrl('bargain/detail')}&id=<%g.bargain%>"<%/if%><%if g.bargain<=0 && g.type!=9%>href="{php echo mobileUrl('goods/detail')}&id=<%g.id%>"<%else%>href="{php echo mobileUrl('cycelbuy/goods/detail')}&id=<%g.id%>" <%/if%>>
+
+		           <div class="name"><%if g.type == 9%><span class="cycle-tip">周期购</span><%/if%> <%g.title%></div>
+
+		   </a>
+
+			 <div style="line-height:0.7rem;height:0.7rem;color:#b2b2b2;font-size:0.6rem;margin-top: .2rem;text-decoration: line-through"><%if g.productprice > 0%><%g.productprice%><% /if %></div>
+
+		    <div isnewuser="<%if g.user_orders_status==1%>1<%else%><%if g.new_user_price>0%>0<%else%>2<%/if%><%/if%>" class="price" style="margin-top: 0">
+				<%if g.new_user_price>0 %>
+					<span class="text">新人价:<%g.new_user_price%></span>
+				<%else%>
+					<span class="text">￥<%g.minprice%></span>
+				<%/if%>
+
+	           <span class="buy<%if g.bargain >0%> bargain-btn<%/if%>" data-type="<%g.type%>" ><%if g.bargain >0%>砍价活动<%else%>购买<%/if%></span>
+
+	       </div>
+
+	 	</div>
+
+	 	<!-- <div class="salez" style="background-image: url('{php echo tomedia($_W['shopset']['shop']['saleout'])}'); "></div> -->
+
+		<!--<a <%if g.bargain>0%>href="{php echo mobileUrl('bargain/detail')}&id=<%g.bargain%>"<%else%>href="{php echo mobileUrl('goods/detail')}&id=<%g.id%>"<%/if%>>-->
+
+		 <!--{if !empty($_W['shopset']['shop']['saleout'])}-->
+
+		 <!--<%if g.total<=0%><div class="salez" style="background-image: url('{php echo tomedia($_W['shopset']['shop']['saleout'])}'); "></div><%/if%>-->
+
+		 <!--{else}-->
+
+		 <!--<%if g.total<=0%><div class="salez" style="background-image: url('{php echo '../addons/ewei_shopv2/static/images/shouqin.png'}'); "></div><%/if%>-->
+
+		 <!--{/if}-->
+
+		<!--</a>-->
+
+	</div>
+
+    <%/each%>
+
+</script>
+
+
+
+<script id="tpl_cate_list" type="text/html">
+
+	<div class="item">
+
+	   <%each category as c%>
+
+		<nav class="on"><%c.catname%></nav>
+
+            <%/each%>
+
+        </div>
+
+</script>
+
+    {template 'goods/picker'}
+
+	{template 'goods/wholesalePicker'}
+	<script language="javascript">
+
+		window.category = false;
+
+		{if $catlevel!=-1}
+
+		window.category = {php echo json_encode($allcategory)};
+
+		{/if}
+
+			require(['biz/goods/list'], function (modal) {
+				modal.init({
+
+					page: "1",
+
+					keywords: "{$_GPC['keywords']}",
+
+					isrecommand: "{$_GPC['isrecommand']}",
+
+					ishot: "{$_GPC['ishot']}",
+
+					isnew: "{$_GPC['isnew']}",
+
+					isdiscount: "{$_GPC['isdiscount']}",
+
+					issendfree: "{$_GPC['issendfree']}",
+
+					istime: "{$_GPC['istime']}",
+
+					cate: "{$_GPC['cate']}",
+
+					order: "{$_GPC['order']}",
+
+					by: "{$_GPC['by']}",
+
+					merchid: "{$_GPC['merchid']}",
+
+					frommyshop: "{php echo intval($_GPC['frommyshop'])}"
+
+				});
+			});
+	</script>
+	<script type="text/javascript">
+		/*搜索记录相关*/
+		//从localStorage获取搜索时间的数组
+		var hisTime;
+		//从localStorage获取搜索内容的数组
+		var hisItem;
+		//从localStorage获取最早的1个搜索时间
+		var firstKey;
+		function nedispalay() {
+			$('.fui-content.navbar').css('display','none');
+			$('.sort').css('display','none');
+		}
+		function bkdispalay() {
+			$('.fui-content.navbar').css('display','block');
+			$('.sort').css('display','block');
+		}
+
+		$(document).delegate(".delete>div", "click", function() {
+			$("#search").val($(this).text());
+		});
+
+		function init() {
+			//每次执行都把2个数组置空
+			hisTime = [];
+			hisItem = [];
+			//模拟localStorage本来有的记录
+			//localStorage.setItem("a",12333);
+			//本函数内的两个for循环用到的变量
+			var i = 0
+			for(; i < localStorage.length; i++) {
+				if(!isNaN(localStorage.key(i))) {
+					hisItem.push(localStorage.getItem(localStorage.key(i)));
+					hisTime.push(localStorage.key(i));
+				}
+			}
+			i = 0;
+			//执行init(),每次清空之前添加的节点
+			$(".delete").remove();
+			for(var j = 0; j < localStorage.length; j++) {
+				if($("#search").val() ==hisItem[j]) {
+					$('.aui-word-key a').remove().eq(j);
+				}
+			}
+			for(; i < hisItem.length; i++) {
+				$(".aui-word-key").prepend('<a class="word-break" href="">'+hisItem[i]+'</a>');
+			}
+		}
+		function isdisplay(){
+			if ( hisItem.length<1 || !hisItem.length){
+				$('.aui-scrollView').css("display",'none');// 开启历史搜索
+				bkdispalay();//显示商品
+			}else{
+				$('.aui-scrollView').css("display",'block');//开启历史搜索
+				nedispalay();//关闭商品
+			}
+		}
+
+        function btnsearch(){
+			var value = $("#search").val();
+			var time = (new Date()).getTime();
+
+			if(!value) {
+				return false;
+			}
+
+			//输入的内容localStorage有记录
+			if($.inArray(value, hisItem) >= 0) {
+				for(var j = 0; j < localStorage.length; j++) {
+					if(value == localStorage.getItem(localStorage.key(j))) {
+						localStorage.removeItem(localStorage.key(j));
+					}
+				}
+				localStorage.setItem(time, value);
+			} else {
+				//输入的内容localStorage没有记录
+				//由于限制了只能有6条记录，所以这里进行判断
+				if(hisItem.length > 10) {
+					firstKey = hisTime[0]
+					localStorage.removeItem(firstKey);
+					localStorage.setItem(time, value);
+				} else {
+					localStorage.setItem(time, value)
+				}
+			}
+
+			 init();
+		}
+		// $(".word-break").on('click',function () {
+		// 	var livalue=$(this).text();
+		// 	$('#search').val(livalue);
+		// 	alert(livalue);
+		// })
+		//清除记录功能
+		$("#his-dele").click(function() {
+			var f = 0;
+			for(; f < hisTime.length; f++) {
+				localStorage.removeItem(hisTime[f]);
+			}
+			init();
+			$('.aui-word-key a').remove();
+		});
+
+		//苹果手机不兼容出现input无法取值以下是解决方法
+		$(function() {
+			$('.word-break').click(function() {
+				var div = $(this).text();
+				$('#search').val(div);
+			})
+			//取到值以后button存储无法取值，这里强迫浏览器强行刷新可解决
+			$('#btnsearch').click(function() {
+				window.location.reload();
+			})
+		})
+
+		$("#search").click(function () {
+			$('.aui-scrollView').css("display",'block');// 开启历史搜索
+			nedispalay();//关闭商品
+		});
+
+		$(document).ready(function() {
+			init();
+			var last;
+			$("#search").keyup(function(event){
+				last = event.timeStamp;
+				var valuesearch=$('#search').val();
+				setTimeout(function(){
+					if(last==event.timeStamp){
+						if (valuesearch==''){
+							$("#list").html('');
+							return false;
+						}
+						$.ajax({
+							url: "{php echo $_W['siteroot'].$_W['script_name']}?i=4&c=entry&m=ewei_shopv2&do=mobile&r=goods.smarttips",
+							type: 'POST',
+							data: {"valuesearchs":valuesearch},
+							dataType:"json",
+							success:function(data){
+								$("#list").html('');
+								var json = eval(data);
+								$.each(json.result.namesearch, function (index, value) {//index是循环的序数
+									var name = json.result.namesearch[index].title;
+									if (name!=''){
+										$("#list").html($("#list").html() + "<li class='search-select-option'>" + this.title + "</li>");
+									}
+								});
+								$("#list li").on('click',function(){
+									var livalue=$(this).text();
+									$('#search').val(livalue);
+									$('.aui-scrollView').css('display','none');
+									$('.search-select').css('display','none');
+									$('.sort').css('display','block');
+									$('.fui-content.navbar').css('display','block');
+									btnsearch();
+									require(['biz/goods/list'], function (modal) {
+										$('.container').empty();
+										modal.init({
+											page: "1",
+
+											keywords: $('#search').val(),
+
+											isrecommand: "{$_GPC['isrecommand']}",
+
+											ishot: "{$_GPC['ishot']}",
+
+											isnew: "{$_GPC['isnew']}",
+
+											isdiscount: "{$_GPC['isdiscount']}",
+
+											issendfree: "{$_GPC['issendfree']}",
+
+											istime: "{$_GPC['istime']}",
+
+											cate: "{$_GPC['cate']}",
+
+											order: "{$_GPC['order']}",
+
+											by: "{$_GPC['by']}",
+
+											merchid: "{$_GPC['merchid']}",
+
+											frommyshop: "{php echo intval($_GPC['frommyshop'])}"
+
+										});
+									});
+								});
+							},
+						})
+					}
+				},500);
+			})
+		});
+	</script>
+	{if $page['diymenu']>-1}
+		{php $this->footerMenus($page['diymenu'], $page['merch'])}
+	{else}
+		{php $this->footerMenus()}
+	{/if}
+
+</div>
+
+
+{template '_footer'}
+
+<script language='javascript'>
+
+    $(function () {
+
+        setTimeout(function () {
+
+            var width = window.screen.width *  window.devicePixelRatio;
+
+            var height = window.screen.height *  window.devicePixelRatio;
+
+            var h = document.body.offsetHeight *  window.devicePixelRatio;
+
+            //  微信版本6.6.7
+
+            if(h == 1923){
+
+                $(".fui-navbar,.cart-list,.fui-footer,.fui-content.navbar").removeClass('iphonex');
+
+                return;
+
+            }
+
+
+
+            if(height==2436 && width==1125){
+
+                $(".fui-navbar,.cart-list,.fui-footer,.fui-content.navbar").addClass('iphonex')
+
+            }
+
+        },600)
+
+    })
+
+    $(document).ready(function(){
+    	var ls = window.localStorage;
+
+    	$(".fui-content.navbar").on("scroll", function(){		// setting scrollTop rds
+    		var scrollTop = $(".fui-content.navbar").scrollTop();
+    		ls.setItem("goods_scroll_top", scrollTop);
+    	})
+    })
+
+</script>

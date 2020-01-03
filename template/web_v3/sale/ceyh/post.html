@@ -1,0 +1,196 @@
+{template '_header'}
+<div class="page-header">
+    当前位置：<span class="text-primary">{if !empty($item['id'])}编辑{else}添加{/if}满额优惠套餐 <small>{if !empty($item['id'])}修改【{$item['title']}】{/if}</small></span>
+</div>
+<div class="page-content">
+    <div class="page-sub-toolbar">
+        <span class=''>
+            {ifp 'sale.ceyh.add'}
+                <a class='btn btn-primary btn-sm' href="{php echo webUrl('sale/ceyh/add',array('type'=>$type))}"><i class='fa fa-plus'></i> 添加满额优惠套餐</a>
+            {/if}
+        </span>
+    </div>
+    <form {ife 'sale.ceyh' $item}action="" method="post"{/if} class="form-horizontal form-validate" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="{$item['id']}" />
+    <input type="hidden" name="shopradio" value="{$item['diylayer']}" />
+    <div class="tab-content">
+        <div class="tab-pane active">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-lg control-label">排序</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'sale.ceyh' $item}
+                        <input type='text' class='form-control' name='displayorder' value="{$item['displayorder']}" />
+                        <span class="help-block">数字越大，排名越靠前,如果为空，默认排序方式为创建时间</span>
+                        {else}
+                        <div class='form-control-static'>{$item['displayorder']}</div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg control-label must">套餐标题</label>
+                    <div class="col-sm-9 col-xs-12 ">
+                        {ife 'sale.package' $item}
+                        <input type="text" id='title' name="title" class="form-control" value="{$item['title']}" data-rule-required="true"/>
+                        {else}
+                        <div class='form-control-static'>{$item['title']}</div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg control-label must">套餐额度</label>
+                    <div class="col-sm-9 col-xs-12 ">
+                        <div class='input-group fixmore-input-group'>
+                            <span class="input-group-addon">单笔订单满</span>
+                            <input type="text" name="enoughmoney"  value="{$item['enoughmoney']}" class="form-control" />
+                            <span class='input-group-addon'>元 立减</span>
+                            <input type="text" name="enoughdeduct"  value="{$item['enoughdeduct']}" class="form-control" />
+                            <span class='input-group-addon'>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg control-label must">选择商品</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class="radio-inline"><input type="radio" name="diylayer" value="1" class="diy-bind" {if $item['diylayer']==1 }checked{/if}> 选择分类</label>
+                        <label class="radio-inline"><input type="radio" name="diylayer" value="2" class="diy-bind" {if $item['diylayer']==2 }checked{/if}> 选择商品组</label>
+                        <label class="radio-inline"><input type="radio" name="diylayer" value="3" class="diy-bind" {if $item['diylayer']==3 }checked{/if}> 手动选择商品</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label name="sltitle" class="col-lg control-label">{if $item['diylayer']==1 }选择商品分类{/if}{if $item['diylayer']==2 }选择商品组{/if}{if $item['diylayer']==3 }手动选择商品{/if}</label>
+                    <!--选择商品分类-->
+                    <div name="shopcates" style="display: {if $item['diylayer']=='1' }block{else}none{/if}" class="col-sm-9 col-xs-12">
+                        <select id="cates"  name='cates[]' class="form-control select2" style='width:605px;' multiple=''>
+                            {loop $category $c}
+                            <option value="{$c['id']}" {if is_array($category) &&  in_array($c['id'],$cates)}selected{/if} >{$c['name']}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                    <!--选择商品组-->
+                    <div name="shopgroups" style="display: {if $item['diylayer']=='2' }block{else}none{/if}" class="col-sm-9 col-xs-12">
+                        <select id="shopgroup"  name='shopgroup[]' class="form-control select2" style='width:605px;' multiple=''>
+                            {loop $shopgroups $sg}
+                            <option value="{$sg['id']}" {if is_array($shopgroups) &&  in_array($sg['id'],$group)}selected{/if} >{$sg['name']}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                    <!--手动选择-->
+                    <div name="shop" style="display: {if $item['diylayer']=='3' }block{else}none{/if}"  class="col-sm-9 col-xs-12">
+                        <div class="input-group">
+                            <input type="text" id="goodsid_text" name="goodsid_text" value="" class="form-control text" readonly="">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary select_goods" type="button">选择商品</button>
+                            </div>
+                        </div>
+                        <div class="input-group multi-img-details container ui-sortable goods_show">
+                            {if !empty($goods)}
+                            {loop $goods $g}
+                            <div class="multi-item" data-id="{$g['id']}" data-name="goodsid" id="{$g['id']}">
+                                <img class="img-responsive img-thumbnail" src="{php echo tomedia($g['thumb'])}" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'" style="width:100px;height:100px;">
+                                <div class="img-nickname">{$g['title']}</div>
+                                <input type="hidden" value="{$g['id']}" name="goodsids[]">
+                                <em onclick="remove({$g['id']})" class="close">×</em>
+                                <div style="clear:both;"></div>
+                            </div>
+                            {/loop}
+                            {/if}
+                        </div>
+
+                        <script>
+                            $(function(){
+                                var title = '';
+                                $('.img-nickname').each(function(){
+                                    title += $(this).html()+';';
+                                });
+                                $('#goodsid_text').val(title);
+                            })
+                            myrequire(['web/goods_selector'],function (Gselector) {
+                                $('.select_goods').click(function () {
+                                    var ids = select_goods_ids();
+                                    Gselector.open('goods_show','',0,true,'',ids);
+                                });
+                            })
+                            function goods_show(data) {
+                                if(data.act == 1){
+                                    var html = '<div class="multi-item" data-id="'+data.id+'" data-name="goodsid" id="'+data.id+'">'
+                                        +'<img class="img-responsive img-thumbnail" src="'+data.thumb+'" onerror="this.src=\'../addons/ewei_shopv2/static/images/nopic.png\'" style="width:100px;height:100px;">'
+                                        +'<div class="img-nickname">'+data.title+'</div>'
+                                        +'<input type="hidden" value="'+data.id+'" name="goodsids[]">'
+                                        +'<em onclick="removeHtml('+data.id+')" class="close">×</em>'
+                                        +'</div>';
+
+                                    $('.goods_show').append(html);
+                                    var title = '';
+                                    $('.img-nickname').each(function(){
+                                        title += $(this).html()+';';
+                                    });
+                                    $('#goodsid_text').val(title);
+                                }else if(data.act == 0){
+                                    remove(data.id);
+                                }
+                            }
+                            function remove(id){
+                                $("[id='"+id+"']").remove();
+                                var title = '';
+                                $('.img-nickname').each(function(){
+                                    title += $(this).html()+';';
+                                });
+                                $('#goodsid_text').val(title);
+                            }
+                            function select_goods_ids(){
+                                var goodsids = [];
+                                $(".multi-item").each(function(){
+                                    goodsids.push($(this).attr('data-id'));
+                                });
+                                return goodsids;
+                            }
+                        </script>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $('input[name=diylayer]').click(function () {
+                        var radio=$(this).val();
+                        if (radio=='1') {$('label[name=sltitle]').text('选择商品分类');$('div[name=shopcates]').css('display','block');$('div[name=shopgroups]').css('display','none');$('div[name=shop]').css('display','none')}
+                        if (radio=='2') {$('label[name=sltitle]').text('选择商品组');$('div[name=shopgroups]').css('display','block');$('div[name=shopcates]').css('display','none');$('div[name=shop]').css('display','none')}
+                        if (radio=='3') {$('label[name=sltitle]').text('选择单个商品');$('div[name=shop]').css('display','block');$('div[name=shopgroups]').css('display','none');$('div[name=shopcates]').css('display','none')}
+                    })
+                </script>
+                <div class="form-group">
+                    <label class="col-lg control-label">状态</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <div class="input-group">
+                            {ife 'sale.ceyh' $item}
+                            <label class="radio radio-inline">
+                                <input type="radio" name="status" value="1" {if intval($item['status']) ==1 }checked="checked"{/if}> 开启
+                            </label>
+                            <label class="radio radio-inline">
+                                <input type="radio" name="status" value="2" {if intval($item['status']) ==0}checked="checked"{/if}> 关闭
+                            </label>
+                            {else}
+                            <div class='form-control-static'>{if intval($item['status']) ==1 }开启{else}关闭{/if}</div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {ife 'sale.ceyh' $item}
+    <div class="form-group">
+        <label class="col-lg control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            <input type="submit"  value="提交" class="btn btn-primary" />
+            <a class="btn btn-default" href="{php echo webUrl('sale/package',array('type'=>$type))}">返回列表</a>
+        </div>
+    </div>
+    {/if}
+
+    </form>
+
+</div>
+{template '_footer'}
+
+<!--青岛易联互动网络科技有限公司-->

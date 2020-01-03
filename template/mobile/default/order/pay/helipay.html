@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>合利宝微信公众号支付</title>
+</head>
+<body>
+<script>
+	function goPay(payData) {
+        if (isWx()) {
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
+                    document.addEventListener("WeixinJSBridgeReady",onBridgeReady(payData), false);
+                } else if (document.attachEvent) {
+                    document.attachEvent("WeixinJSBridgeReady", onBridgeReady(payData));
+                    document.attachEvent("onWeixinJSBridgeReady", onBridgeReady(payData));
+                }
+            } else {
+                onBridgeReady(payData);
+            }
+        }
+    }
+
+    function isWx() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+	
+    function onBridgeReady(data){
+        WeixinJSBridge.invoke(
+            "getBrandWCPayRequest", {
+                "appId"     : data.appId,
+                "timeStamp" : data.timeStamp,
+                "nonceStr"  : data.nonceStr,
+                "package"   : data.package,
+                "signType"  : data.signType,
+                "paySign"   : data.paySign
+            },
+            function(res){
+                if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                    alert("恭喜，您已支付成功！");
+                } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                    alert("取消支付！");
+                } else {
+                    alert("启动微信支付失败,详细错误为: " + res.err_msg);
+                }
+            }
+        );
+    }
+</script>
+
+</body>
+</html>

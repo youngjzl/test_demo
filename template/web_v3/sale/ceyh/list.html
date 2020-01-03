@@ -1,0 +1,52 @@
+{if count($packages)>0}
+{loop $packages $item}
+<tr>
+    <td>
+        <input type='checkbox'  value="{$item['id']}"/>
+    </td>
+    <td style='text-align:center;'>
+        {ifp 'sale.ceyh.edit'}
+        <a href='javascript:;' data-toggle='ajaxEdit' data-href="{php echo webUrl('sale/ceyh/change',array('typechange'=>'displayorder','id'=>$item['id']))}" >{$item['displayorder']}</a>
+        {else}
+        {$item['displayorder']}
+        {/if}
+    </td>
+    <td class='full' style="overflow-x: hidden">
+        {$item['title']}
+    </td>
+    <td>
+        {$item['enoughmoney']}
+    </td>
+    <td>
+        {$item['enoughdeduct']}
+    </td>
+    <td  style="overflow:visible;">
+        <span class='label {if $item['status']==1}label-primary{else}label-default{/if}'
+        {ifp 'sale.ceyh.edit'}
+        data-toggle='ajaxSwitch'
+        data-confirm = "确认是{if $item['status']==1}关闭{else}开启{/if}？"
+        data-switch-refresh='true'
+        data-switch-value='{$item['status']}'
+        data-switch-value0='0|关闭|label label-default|{php echo webUrl('sale/ceyh/status',array('status'=>1,'id'=>$item['id']))}'
+        data-switch-value1='1|开启|label label-primary|{php echo webUrl('sale/ceyh/status',array('status'=>2,'id'=>$item['id']))}'
+        {/if}>
+        {if $item['status']==1}开启{else}关闭{/if}</span>
+    </td>
+    <td  style="overflow:visible;position:relative;">
+        {ifp 'sale.ceyh.edit|sale.ceyh.view'}
+        <a  class='btn  btn-op btn-operation' href="{php echo webUrl('sale/ceyh/edit', array('type'=>$_GPC['type'],'id' => $item['id'],'radio'=>$item['diylayer'],'page'=>$page))}">
+            <span data-toggle="tooltip" data-placement="top" data-original-title="{ifp 'sale.ceyh.edit'}修改{else}查看{/if}"><i class="icow icow-bianji2"></i></span>
+        </a>
+        {/if}
+        {ifp 'sale.ceyh.delete1'}
+        <a  class='btn  btn-op btn-operation' data-toggle='ajaxRemove' href="{php echo webUrl('sale/ceyh/delete1', array('id' => $item['id']))}" data-confirm='确认要彻底删除吗?？'>
+            <span data-toggle="tooltip" data-placement="top" data-original-title="删除"><i class="icow icow-shanchu1"></i></span>
+        </a>
+        {/if}
+    </td>
+</tr>
+{/loop}
+{else}
+<td colspan="7" style="text-align: center;">暂时没有任何优惠套餐</td>
+{/if}
+<!--913702023503242914-->
