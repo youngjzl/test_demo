@@ -224,7 +224,7 @@
                                             <span class="buy buybtn-6" style="background-color: {$diyitem['style']['buybtncolor']};"><i class="icon icon-add"></i></span>
 
                                         {/if}
-                                    <span style="display: none" class="isnewuser" isnewuser="{if $user_orders_status==0}0{else}{if $goodsitem['new_user_goods']>0}0{else}1{/if}{/if}"></span>
+                                    <span style="display: none" class="isnewuser" isnewuser="{if $user_orders_status==0 && $goodsitem['new_user_goods']>0 }0{else}1{/if}"></span>
 
                                     {elseif !empty($goodsitem['bargain'])}
 
