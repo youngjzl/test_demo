@@ -6,7 +6,7 @@
 
     {if empty($diyitem['params']['goodsscroll'])}
 
-        <div class="fui-goods-group {$diyitem['style']['liststyle']}" style="background: {$diyitem['style']['background']};">
+<div id="{$diyitem['jumpaddressname']}" class="fui-goods-group {$diyitem['style']['liststyle']}" style="background: {$diyitem['style']['background']};">
 
             {loop $diyitem['data'] $goodsitem}
 
