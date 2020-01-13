@@ -36,6 +36,18 @@ class Cart_EweiShopV2Page extends MobileLoginPage
 		global $_GPC;
 		$uniacid = $_W["uniacid"];
 		$openid = $_W["openid"];
+        //判断是否是新会员的价格
+        $info = m('member')->getInfo($openid);
+        $user_orders='';
+        if (!empty($info['openid'])){
+            $user_orders=pdo_fetch("select *  from " . tablename("ewei_shop_order") . " where openid =:openid ", array( ":openid" => $info['openid']));
+            if(!empty($user_orders)){
+                $user_orders=1;
+            }else{
+                $user_orders=0;
+            }
+        }
+
 		if( p("newstore") ) 
 		{
 			$condition = " and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0 and f.isnewstore=0";
@@ -52,7 +64,7 @@ class Cart_EweiShopV2Page extends MobileLoginPage
 		$totalprice = 0;
 		$ischeckall = true;
 		$level = m("member")->getLevel($openid);
-		$sql = "SELECT f.id,f.total,f.goodsid,g.goodsbusinesstype as goodsbusinesstype,g.rate as rate,g.rate1 as rate1,g.rate2 as rate2,g.rate3 as rate3,g.rate4 as rate4,g.rate5 as rate5,g.total as stock,g.preselltimeend,g.presellprice as gpprice,g.hasoption, o.stock as optionstock,g.presellprice,g.ispresell, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice," . " g.productprice,o.title as optiontitle,o.presellprice,f.optionid,o.specs,g.minbuy,g.maxbuy,g.unit,g.merchid,g.checked,g.isdiscount_discounts,g.isdiscount,g.isdiscount_time,g.isdiscount_time_end,g.isnodiscount,g.discounts,g.merchsale" . " ,f.selected,g.type,g.intervalfloor,g.intervalprice  FROM " . tablename("ewei_shop_member_cart") . " f " . " left join " . tablename("ewei_shop_goods") . " g on f.goodsid = g.id " . " left join " . tablename("ewei_shop_goods_option") . " o on f.optionid = o.id " . " where 1 " . $condition . " ORDER BY `id` DESC ";
+		$sql = "SELECT f.id,f.total,f.goodsid,g.new_user_price,g.goodsbusinesstype as goodsbusinesstype,g.rate as rate,g.rate1 as rate1,g.rate2 as rate2,g.rate3 as rate3,g.rate4 as rate4,g.rate5 as rate5,g.total as stock,g.preselltimeend,g.presellprice as gpprice,g.hasoption, o.stock as optionstock,g.presellprice,g.ispresell, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice," . " g.productprice,o.title as optiontitle,o.presellprice,f.optionid,o.specs,g.minbuy,g.maxbuy,g.unit,g.merchid,g.checked,g.isdiscount_discounts,g.isdiscount,g.isdiscount_time,g.isdiscount_time_end,g.isnodiscount,g.discounts,g.merchsale" . " ,f.selected,g.type,g.intervalfloor,g.intervalprice  FROM " . tablename("ewei_shop_member_cart") . " f " . " left join " . tablename("ewei_shop_goods") . " g on f.goodsid = g.id " . " left join " . tablename("ewei_shop_goods_option") . " o on f.optionid = o.id " . " where 1 " . $condition . " ORDER BY `id` DESC ";
 		$list = pdo_fetchall($sql, $params);
 		foreach( $list as &$g ) 
 		{
@@ -274,7 +286,7 @@ class Cart_EweiShopV2Page extends MobileLoginPage
                 //--end
             }
 		}
-		show_json(1, array( "ischeckall" => $ischeckall, "list" => $list, "total" => $total, "totalprice" => round($totalprice, 2), "merch_user" => $merch_user, "merch" => $merch,'ceyh'=>$ceyhitem,'ceyhcha'=>$ceyhcha,'ceyhyrl'=>trim($ceyhurl)));
+		show_json(1, array( "ischeckall" => $ischeckall, "list" => $list, "total" => $total, "totalprice" => round($totalprice, 2), "merch_user" => $merch_user, "merch" => $merch,'ceyh'=>$ceyhitem,'ceyhcha'=>$ceyhcha,'ceyhyrl'=>trim($ceyhurl),'user_orders'=>$user_orders));
 	}
 	public function select()
 	{

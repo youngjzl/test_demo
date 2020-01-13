@@ -80,9 +80,13 @@
 					<div class='price'>
 						<span class="bigprice text-danger">
 						<span>&yen;</span>
-						<span class="marketprice"><%g.marketprice%></span>
-							<%if g.productprice > g.marketprice%>
-								<span class="productprice">&yen;<%g.productprice%></span>
+							<%if g.new_user_price>0 && user_orders==0 %>
+								<span class="marketprice"><%g.new_user_price%></span>
+							<%else%>
+								<span class="marketprice"><%g.marketprice%></span>
+									<%if g.productprice > g.marketprice%>
+										<span class="productprice">&yen;<%g.productprice%></span>
+									<%/if%>
 							<%/if%>
 					</span>
 
