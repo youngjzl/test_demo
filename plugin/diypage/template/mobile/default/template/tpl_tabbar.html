@@ -6,11 +6,11 @@
 
     {if strpos($tabbar['linkurl'],'index.php') === false }
 
-    <a class="item external tab-a topmenu_tab" style="{if count($diyitem['data']) < 5}flex: 1;{/if}" href=" 'C1570852450142'){echo 'https://www.xmylyg.com/app/index.php?i=4&c=entry&m=ewei_shopv2&do=mobile&r=merch&merchid=100';}else{echo '#'.$tabbar['jumpaddress'];} ?>" data-notskip="1" data-url="{$tabbar['linkurl']}" data-textcolor1="{$diyitem['style']['color']}" data-activecolor1="{$diyitem['style']['activecolor']}" data-bgcolor1="{$diyitem['style']['background']}" data-activebgcolor1="{$diyitem['style']['activebackground']}">{$tabbar['text']}</ a>
+    <a class="item external tab-a topmenu_tab" style="{if count($diyitem['data']) < 5}flex: 1;{/if}" href="<?php if($index=='C1570852450142'){echo 'https://www.xmylyg.com/app/index.php?i=4&c=entry&m=ewei_shopv2&do=mobile&r=merch&merchid=100';}else{echo '#'.$tabbar['jumpaddress'];} ?>" data-notskip="1" data-url="{$tabbar['linkurl']}" data-textcolor1="{$diyitem['style']['color']}" data-activecolor1="{$diyitem['style']['activecolor']}" data-bgcolor1="{$diyitem['style']['background']}" data-activebgcolor1="{$diyitem['style']['activebackground']}">{$tabbar['text']}</a>
 
     {else}
 
-    <a class="item external tab-a topmenu_tab" style="{if count($diyitem['data']) < 5}flex: 1;{/if}" href="javascript:;" data-notskip="0" data-url="{$tabbar['linkurl']}" data-textcolor1="{$diyitem['style']['color']}" data-activecolor1="{$diyitem['style']['activecolor']}" data-bgcolor1="{$diyitem['style']['background']}" data-activebgcolor1="{$diyitem['style']['activebackground']}">{$tabbar['text']}</ a>
+    <a class="item external tab-a topmenu_tab" style="{if count($diyitem['data']) < 5}flex: 1;{/if}" href="javascript:;" data-notskip="0" data-url="{$tabbar['linkurl']}" data-textcolor1="{$diyitem['style']['color']}" data-activecolor1="{$diyitem['style']['activecolor']}" data-bgcolor1="{$diyitem['style']['background']}" data-activebgcolor1="{$diyitem['style']['activebackground']}">{$tabbar['text']}</a>
 
     {/if}
 
