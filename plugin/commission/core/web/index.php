@@ -145,8 +145,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 		if( $_W["ispost"] ) 
 		{
-			$data = (is_array($_GPC["data"]) ? $_GPC["data"] : array( ));
-			if( $data["cansee"] == 1 && empty($data["seetitle"]) ) 
+			$data = (is_array($_GPC["data"]) ? $_GPC["data"] : array());
+			if( $data["cansee"] == 1 && empty($data["seetitle"]) )
 			{
 				show_json(0, "请选择佣金显示文字");
 			}
@@ -155,7 +155,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$data["cashother"] = intval($data["cashother"]);
 			$data["cashalipay"] = intval($data["cashalipay"]);
 			$data["cashcard"] = intval($data["cashcard"]);
-			if( !empty($data["withdrawcharge"]) ) 
+			if( !empty($data["withdrawcharge"]) )
 			{
 				$data["withdrawcharge"] = trim($data["withdrawcharge"]);
 				$data["withdrawcharge"] = floatval(trim($data["withdrawcharge"], "%"));
@@ -165,39 +165,40 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$data["register_bottom_content"] = m("common")->html_images($data["register_bottom_content"]);
 			$data["applycontent"] = m("common")->html_images($data["applycontent"]);
 			$data["regbg"] = save_media($data["regbg"]);
-			$data["become_goodsid"] = intval($_GPC["become_goodsid"]);
+			$data["become_goodsid"] = intval($_GPC["become_goodsid"]);//商品id
+            $data['couponid']=empty($data['open_coupons']) ? 0 : intval($_GPC["couponid"][0]);//优惠券id
 			$data["texts"] = (is_array($_GPC["texts"]) ? $_GPC["texts"] : array( ));
-			if( $data["become"] == 4 && empty($data["become_goodsid"]) ) 
+			if( $data["become"] == 4 && (empty($data["become_goodsid"]) || (empty($data['couponid'])&&!empty($data['open_coupons']) ) ) )
 			{
-				show_json(0, "请选择商品");
+				show_json(0, "请选择商品或者优惠券");
 			}
-			m("common")->updatePluginset(array( "commission" => $data ));
-			m("cache")->set("template_" . $this->pluginname, $data["style"]);
-			$selfbuy = ($data["selfbuy"] ? "开启" : "关闭");
-			$become_child = ($data["become_child"] ? ($data["become_child"] == 1 ? "首次下单" : "首次付款") : "首次点击分享连接");
-			switch( $data["become"] ) 
-			{
-				case "0": $become = "无条件";
-				break;
-				case "1": $become = "申请";
-				break;
-				case "2": $become = "消费次数";
-				break;
-				case "3": $become = "消费金额";
-				break;
-				case "4": $become = "购买商品";
-				break;
-			}
-			plog("commission.set.edit", "修改基本设置<br>" . "分销内购 -- " . $selfbuy . "<br>成为下线条件 -- " . $become_child . "<br>成为分销商条件 -- " . $become);
-			show_json(1, array( "url" => webUrl("commission/set", array( "tab" => str_replace("#tab_", "", $_GPC["tab"]) )) ));
+            m("common")->updatePluginset(array( "commission" => $data ));
+            m("cache")->set("template_" . $this->pluginname, $data["style"]);
+            $selfbuy = ($data["selfbuy"] ? "开启" : "关闭");
+            $become_child = ($data["become_child"] ? ($data["become_child"] == 1 ? "首次下单" : "首次付款") : "首次点击分享连接");
+            switch( $data["become"] )
+            {
+                case "0": $become = "无条件";
+                    break;
+                case "1": $become = "申请";
+                    break;
+                case "2": $become = "消费次数";
+                    break;
+                case "3": $become = "消费金额";
+                    break;
+                case "4": $become = "购买商品";
+                    break;
+            }
+            plog("commission.set.edit", "修改基本设置<br>" . "分销内购 -- " . $selfbuy . "<br>成为下线条件 -- " . $become_child . "<br>成为分销商条件 -- " . $become);
+            show_json(1, array( "url" => webUrl("commission/set", array( "tab" => str_replace("#tab_", "", $_GPC["tab"]) )) ));
 		}
 		$styles = array( );
 		$dir = IA_ROOT . "/addons/ewei_shopv2/plugin/" . $this->pluginname . "/template/mobile/";
-		if( $handle = opendir($dir) ) 
+		if( $handle = opendir($dir) )
 		{
-			while( ($file = readdir($handle)) !== false ) 
+			while( ($file = readdir($handle)) !== false )
 			{
-				if( $file != ".." && $file != "." && is_dir($dir . "/" . $file) ) 
+				if( $file != ".." && $file != "." && is_dir($dir . "/" . $file) )
 				{
 					$styles[] = $file;
 				}
@@ -205,12 +206,16 @@ class Index_EweiShopV2Page extends PluginWebPage
 			closedir($handle);
 		}
 		$data = m("common")->getPluginset("commission");
-		$goods = false;
-		if( !empty($data["become_goodsid"]) ) 
-		{
-			$goods = pdo_fetch("select id,title,thumb from " . tablename("ewei_shop_goods") . " where id=:id and uniacid=:uniacid limit 1 ", array( ":id" => $data["become_goodsid"], ":uniacid" => $_W["uniacid"] ));
-		}
-		include($this->template());
-	}
+        //购买商品可以升级为店主的商品id和优惠券的id--$data["couponid"]
+		$goods = false;$coupon=false;
+        if( !empty($data["become_goodsid"]) )
+        {
+            $goods = pdo_fetch("select id,title,thumb from " . tablename("ewei_shop_goods") . " where id=:id and uniacid=:uniacid limit 1 ", array( ":id" => $data["become_goodsid"], ":uniacid" => $_W["uniacid"] ));
+        }
+        if (!empty($data["couponid"])){
+            $coupon=pdo_fetch("select id,couponname from " . tablename("ewei_shop_coupon") . " where id=:id and uniacid=:uniacid limit 1 ", array( ":id" => $data["couponid"], ":uniacid" => $_W["uniacid"] ));
+        }
+        include($this->template());
+    }
 }
 ?>

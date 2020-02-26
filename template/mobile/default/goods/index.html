@@ -235,16 +235,16 @@
 		   </a>
 
 			 <div style="line-height:0.7rem;height:0.7rem;color:#b2b2b2;font-size:0.6rem;margin-top: .2rem;text-decoration: line-through"><%if g.productprice > 0%><%g.productprice%><% /if %></div>
-				<div isnewuser="<%if g.user_orders_status==1 && g.new_user_price>0 %>1<%else%>0<%/if%>" class="price" style="margin-top: 0">
-					<%if g.new_user_price>0 %>
-						<span class="text">新人价:<%g.new_user_price%></span>
-					<%else%>
-						<span class="text">￥<%g.minprice%></span>
-					<%/if%>
+		    <div isnewuser="<%g.user_orders_status%>" is_newuserprice="<%g.new_user_price%>" class="price" style="margin-top: 0">
+				<%if g.new_user_price>0 %>
+					<span class="text">新人价:<%g.new_user_price%></span>
+				<%else%>
+					<span class="text">￥<%g.minprice%></span>
+				<%/if%>
 
-				   <span class="buy<%if g.bargain >0%> bargain-btn<%/if%>" data-type="<%g.type%>" ><%if g.bargain >0%>砍价活动<%else%>购买<%/if%></span>
+	           <span class="buy<%if g.bargain >0%> bargain-btn<%/if%>" data-type="<%g.type%>" ><%if g.bargain >0%>砍价活动<%else%>购买<%/if%></span>
 
-			   </div>
+	       </div>
 
 	 	</div>
 

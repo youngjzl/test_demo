@@ -1,3 +1,5 @@
+
+
 {if !empty($diyitem['data']) && $diyitem['style']['showtype'] == 1}
 
 <div class="fui-tabbar tabbar-num style1" style="height: 2rem;">
@@ -6,7 +8,7 @@
 
     {if strpos($tabbar['linkurl'],'index.php') === false }
 
-    <a class="item external tab-a topmenu_tab" style="{if count($diyitem['data']) < 5}flex: 1;{/if}" href="<?php if($index=='C1570852450142'){echo 'https://www.xmylyg.com/app/index.php?i=4&c=entry&m=ewei_shopv2&do=mobile&r=merch&merchid=100';}else{echo '#'.$tabbar['jumpaddress'];} ?>" data-notskip="1" data-url="{$tabbar['linkurl']}" data-textcolor1="{$diyitem['style']['color']}" data-activecolor1="{$diyitem['style']['activecolor']}" data-bgcolor1="{$diyitem['style']['background']}" data-activebgcolor1="{$diyitem['style']['activebackground']}">{$tabbar['text']}</a>
+    <a class="item external tab-a topmenu_tab"  style="{if count($diyitem['data']) < 5}flex: 1;{/if}" href="<?php if($index=='C1570852450142'){echo 'https://www.xmylyg.com/app/index.php?i=4&c=entry&m=ewei_shopv2&do=mobile&r=merch&merchid=100';}else{ if($diyitem['style']['anchorsty']==1){ if($diyitem['style']['anchselect']==1){echo '#'.$tabbar['jumpaddress'];}else if($diyitem['style']['anchselect']==2){echo $tabbar['urladress'];}}} ?>" data-notskip="1" data-url="{$tabbar['linkurl']}" data-textcolor1="{$diyitem['style']['color']}" data-activecolor1="{$diyitem['style']['activecolor']}" data-bgcolor1="{$diyitem['style']['background']}" data-activebgcolor1="{$diyitem['style']['activebackground']}">{$tabbar['text']}</a>
 
     {else}
 
@@ -24,7 +26,7 @@
 
 {if !empty($diyitem['data']) && $diyitem['style']['showtype'] == 2}
 
-<div class="fui-tabbar tabbar-num style2" style="">
+<div class="fui-tabbar tabbar-num style2" >
 
     {loop $diyitem['data'] $index $tabbar}
 

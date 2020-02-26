@@ -76,22 +76,53 @@
 	                    {/if}
                     </div>
            </div>
-         <div class="form-group  become become4" {if $data['become']!='4' }style="display:none"{/if}>
+            <div class="form-group  become become4" {if $data['become']!='4' }style="display:none"{/if}>
+                <div class="form-group">
                     <label class="col-lg control-label" ></label>
                     <div class="col-sm-9 col-xs-12">
-                    	{ifp 'commission.set.edit'}
-                              {php echo tpl_selector('become_goodsid',array('url'=>webUrl('goods/query'), 'items'=>$goods,'buttontext'=>'选择商品','placeholder'=>'请输入商品标题','preview'=>false))}
+                        {ifp 'commission.set.edit'}
+                            {php echo tpl_selector('become_goodsid',array('url'=>webUrl('goods/query'), 'items'=>$goods,'buttontext'=>'选择商品','placeholder'=>'请输入商品标题','preview'=>false))}
                         {else}
-                        	{if !empty($goods)}
-                        		<a href="{php echo webUrl('goods/edit',array('id'=>$goods['id']))}" target="_blank">{$goods['title']}(ID: {$goods['id']})</a>
-                        	{else}
-                        		未选择商品
-                        	{/if}
+                            <!--商品-->
+                            {if !empty($goods)}
+                                <a href=" 'goods/edit',array('id'=>$goods['id']))}" target="_blank">{$goods['title']}(ID: {$goods['id']})</ a>
+                            {else}
+                                未选择商品
+                            {/if}
+                            <!--优惠券-->
+                            {if !empty($coupon)}
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th style='width:100px;'>优惠券名</th>
+                                </tr>
+                                </thead>
+                                <tbody id="param-items1" class="ui-sortable">
+                                <tr class='multi-product-item' data-id="{$coupon['id']}">
+                                    <input type='hidden' class='form-control img-textname' readonly='' value="{$coupon['couponname']}">
+                                    <input type='hidden' value="{$coupon['id']}" name="couponids[]">
+                                    <td style='width:220px;'>{$coupon['couponname']}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            {else}
+                            暂无优惠券
+                            {/if}
                         {/if}
+                    </div></div>
+                <div class="form-group">
+                    <label class="col-lg control-label" ></label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="col-sm-12 form-group" >
+                            <label class="radio-inline"><input type="radio"  name="data[open_coupons]" value="1" onclick="showConpous(this)"  {if $data['open_coupons'] ==1} checked="checked"{/if} /> 赠送优惠券</label>
+                            <label class="radio-inline"><input type="radio"  name="data[open_coupons]" value="0" onclick="showConpous(this)" {if $data['open_coupons'] ==0} checked="checked"{/if} /> 不赠送优惠券</label>
+                        </div>
+                        <div class="conpousSel" {if $data['open_coupons']==0 }style="display:none"{/if}>
+                            {php echo tpl_selector('couponid',array('required'=>false,'type'=>'coupon_cp','autosearch'=>1, 'preview'=>true,'url'=>webUrl('sale/coupon/querycplist'),'text'=>'couponname','items'=>$coupon,'readonly'=>true,'buttontext'=>'选优惠券','placeholder'=>'请选择优惠券'))}
+                        </div>
                     </div>
-           </div>
-   
-    
+                </div>
+            </div>
           <div class="form-group becomecon">
                 <label class="col-lg control-label"></label>
                 <div class="col-sm-5 becomecheck">

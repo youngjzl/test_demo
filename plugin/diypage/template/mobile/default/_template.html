@@ -102,7 +102,7 @@
 
 <script type="text/html" id="tpl_show_picture">
     <%if data%>
-        <div class="fui-picture" style="padding-bottom: <%style.paddingtop%>px; background: <%style.background%>;">
+        <div class="fui-picture" id="<style.jumpaddressname>"   style="padding-bottom: <%style.paddingtop%>px; background: <%style.background%>;">
             <%each data as item%>
                 <a href="<%item.linkurl||'javascript:;'%>" style="display: block; padding: <%style.paddingtop%>px <%style.paddingleft%>px;" data-nocache="true">
                     <img data-lazy="<%imgsrc item.imgurl%>" />

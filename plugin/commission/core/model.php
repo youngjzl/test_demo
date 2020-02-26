@@ -1357,6 +1357,7 @@ if( !class_exists("CommissionModel") )
 			{
 				$parent = m("member")->getMember($mid);
 			}
+            //*******************是否有此人           分销商权限               审核状态
 			$parent_is_agent = !empty($parent) && $parent["isagent"] == 1 && $parent["status"] == 1;
 			if( $parent_is_agent && $parent["id"] != $member["agentid"] && $parent["openid"] != $openid ) 
 			{
@@ -1368,7 +1369,7 @@ if( !class_exists("CommissionModel") )
 					pdo_update("ewei_shop_member", array( "clickcount" => $parent["clickcount"] + 1 ), array( "uniacid" => $_W["uniacid"], "id" => $parent["id"] ));
 				}
 			}
-			if( $member["isagent"] == 1 )
+			if( $member["isagent"] == 1 )//分销商权限状态
 			{
 				return NULL;
 			}
@@ -1377,7 +1378,6 @@ if( !class_exists("CommissionModel") )
 			{
 				$redis_key = "ewei_" . $_W["uniacid"] . "_member_commission_first";
 				$first = m("member")->memberRadisCount($redis_key);
-                file_put_contents('sitet.txt',var_export($first,true).PHP_EOL,FILE_APPEND);
 				if( !$first ) 
 				{
 					$first = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_member") . " where uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"] ));
@@ -1517,6 +1517,7 @@ if( !class_exists("CommissionModel") )
 				$order_status = (intval($set["become_order"]) == 0 ? 1 : 3);
 				$become_check = intval($set["become_check"]);
 				$to_check_agent = false;
+				//分销应用设置
 				if( empty($set["become"]) ) 
 				{
 					if( empty($member["agentblack"]) ) 
@@ -1593,7 +1594,7 @@ if( !class_exists("CommissionModel") )
 				return NULL;
 			}
 			$set = $this->getSet();
-			if( empty($set["level"]) ) 
+			if( empty($set["level"]) )
 			{
 				return NULL;
 			}
@@ -2115,7 +2116,7 @@ if( !class_exists("CommissionModel") )
 			}
 			$this->orderFinishTask($order, ($set["selfbuy"] ? true : false), $member);
 			$time = time();
-			$become_check = intval($set["become_check"]);
+			$become_check = intval($set["become_check"]);//是否需要审核状态
 			$isagent = $member["isagent"] == 1 && $member["status"] == 1;
 			$parentisagent = true;
 			if( !empty($member["agentid"]) ) 
@@ -2128,13 +2129,14 @@ if( !class_exists("CommissionModel") )
 			}
 			if( !$isagent && $set["become_order"] == "1" ) 
 			{
-				if( $set["become"] == "4" && !empty($set["become_goodsid"]) ) 
+				if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
 				{
 					$order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
-					if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["agentblack"]) ) 
+					if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["agentblack"]) )
 					{
 						pdo_update("ewei_shop_member", array( "status" => $become_check, "isagent" => 1, "agenttime" => ($become_check == 1 ? $time : 0) ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
-						if( $become_check == 1 ) 
+						//不审核
+						if( $become_check == 1 )
 						{
 							$this->sendMessage($openid, array( "nickname" => $member["nickname"], "agenttime" => $time ), TM_COMMISSION_BECOME);
 							if( $parentisagent ) 
@@ -2287,7 +2289,7 @@ if( !class_exists("CommissionModel") )
 				$become_check = intval($set["become_check"]);
 				if( $set["become_order"] == "1" ) 
 				{
-					if( $set["become"] == "4" && !empty($set["become_goodsid"]) ) 
+					if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
 					{
 						$order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
 						if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["partnerblack"]) ) 

@@ -1,0 +1,33 @@
+array (
+  'host' => '127.0.0.1',
+  'username' => 'www_xmylyg_com',
+  'password' => 'ND8LEHxRzjiER24d',
+  'port' => '3306',
+  'database' => 'www_xmylyg_com',
+  'charset' => 'utf8',
+  'pconnect' => 0,
+  'tablepre' => 'ims_',
+)
+array (
+  'host' => '127.0.0.1',
+  'username' => 'www_xmylyg_com',
+  'password' => 'ND8LEHxRzjiER24d',
+  'port' => '3306',
+  'database' => 'www_xmylyg_com',
+  'charset' => 'utf8',
+  'pconnect' => 0,
+  'tablepre' => 'ims_',
+)
+1
+'www_xmylyg_com'
+'www_xmylyg_com'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'
+'mysql:dbname=www_xmylyg_com;host=127.0.0.1;port=3306;charset=utf8'

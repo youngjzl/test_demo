@@ -6,11 +6,9 @@
 
     {if empty($diyitem['params']['goodsscroll'])}
 
-<div id="{$diyitem['jumpaddressname']}" class="fui-goods-group {$diyitem['style']['liststyle']}" style="background: {$diyitem['style']['background']};">
+        <div class="fui-goods-group {$diyitem['style']['liststyle']}" style="background: {$diyitem['style']['background']};">
 
             {loop $diyitem['data'] $goodsitem}
-
-
 
                 <a class="fui-goods-item" data-goodsid="{$goodsitem['gid']}" href="{if $goodsitem['ctype']==9}{php echo mobileUrl('cycelbuy/goods/detail', array('id'=>$goodsitem['gid']))}{else}{php echo mobileUrl(empty($diyitem['params']['goodstype'])?'goods/detail':'creditshop/detail', array('id'=>$goodsitem['gid']))}{/if}"data-type="{php echo empty($diyitem['params']['goodstype'])? $goodsitem['ctype']:0}" data-nocache="true" style="position: relative;">
 

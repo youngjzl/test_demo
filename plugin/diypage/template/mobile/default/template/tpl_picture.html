@@ -1,9 +1,18 @@
 {if !empty($diyitem['data'])}
-    <div class="fui-picture" style="padding-bottom: {$diyitem['style']['paddingtop']}px; background: {$diyitem['style']['background']};">
+
+<a id="{php echo $diyitem['style']['jumpaddressname']}" style=" position: relative;top: -120px;display: block;height: 0;overflow: hidden;"></a>
+
+<div class="fui-picture" id="{php echo $diyitem['style']['jumpaddressname']}" style="padding-bottom: {$diyitem['style']['paddingtop']}px; background: {$diyitem['style']['background']};z-index: 10;">
+
         {loop $diyitem['data'] $pictureitem}
+
         <a href="{php echo empty($pictureitem['linkurl'])? 'javascript:;': $pictureitem['linkurl']}" style="display: block; padding: {$diyitem['style']['paddingtop']}px {$diyitem['style']['paddingleft']}px;" data-nocache="true">
+
             <img src="{php echo tomedia($pictureitem['imgurl'])}" />
+
         </a>
+
         {/loop}
+
     </div>
 {/if}

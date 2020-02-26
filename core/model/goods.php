@@ -258,7 +258,7 @@ class Goods_EweiShopV2Model
 					array_splice($list, $lk, 1);
 				}
 			}
-			$list[$lk]['user_orders_status']=empty($user_orders) && !empty($lv['new_user_price'])?1:0;
+            $list[$lk]['user_orders_status']=empty($user_orders)>0 ? 1 : 0;
 		}
 		$list = set_medias($list, "thumb");
 		return array( "list" => $list, "total" => $total );
