@@ -2132,6 +2132,7 @@ if( !class_exists("CommissionModel") )
 				if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
 				{
 					$order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
+
 					if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["agentblack"]) )
 					{
 						pdo_update("ewei_shop_member", array( "status" => $become_check, "isagent" => 1, "agenttime" => ($become_check == 1 ? $time : 0) ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
